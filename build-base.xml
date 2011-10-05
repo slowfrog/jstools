@@ -1,0 +1,127 @@
+<project name="build-base" default="all">
+
+  <dirname property="build-base.basedir" file="${ant.file.build-base}" />
+
+  <target name="all" depends="clean, compile, test"
+          description="Cleans, compiles and tests" />
+  
+  <target name="clean">
+    <delete dir="testoutput" failonerror="no" />
+    <delete dir="testoutput_compiled" failonerror="no" />
+    <delete dir="testoutput_advanced" failonerror="no" />
+    <delete dir="compiled" failonerror="no" />
+  </target>
+  
+  <target name="init"
+          description="Initializes the build, define macros...">
+
+    <taskdef resource="net/sf/antcontrib/antcontrib.properties">
+      <classpath>
+        <pathelement location="${build-base.basedir}/ant-contrib-1.0b3.jar" />
+      </classpath>
+    </taskdef>
+    
+    <macrodef name="closure">
+      <attribute name="level" default="SIMPLE_OPTIMIZATIONS" />
+      <attribute name="files" />
+      <attribute name="output" default="compiled/${ant.project.name}_compiled.js" />
+      <element name="extra" optional="yes" implicit="yes" />
+      <sequential>
+        <java jar="${build-base.basedir}/closure.jar" fork="true">
+          <arg line="@{files}" />
+          <arg value="--compilation_level=@{level}" />
+          <arg value="--js_output_file=@{output}" />
+          <extra />
+        </java>
+      </sequential>
+    </macrodef>
+    
+    <macrodef name="jstest">
+      <attribute name="destdir" default="testoutput" />
+      <attribute name="auto-conf" default="yes" />
+      <attribute name="conf" default="jsTestDriver.conf" />
+      <attribute name="files" />
+      <attribute name="serve" default="" />
+      <sequential>
+        <if>
+          <istrue value="@{auto-conf}" />
+          <then>
+            <copy file="${build-base.basedir}/template_jsTestDriver.conf" tofile="@{conf}"
+                  overwrite="yes">
+              <filterset>
+                <filter token="FILES" value="@{files}" />
+                <filter token="SERVE" value="@{serve}" />
+              </filterset>
+            </copy>
+          </then>
+        </if>
+        <mkdir dir="@{destdir}" />
+        <java jar="${build-base.basedir}/JsTestDriver-1.3.3b.jar" fork="true">
+          <arg value="--config" /><arg value="@{conf}" />
+          <arg value="--tests" /><arg value="all" />
+          <arg value="--testOutput" /><arg value="@{destdir}" />
+        </java>
+        <junitreport>
+          <fileset dir="@{destdir}" includes="TEST-*.xml" />
+          <report format="frames" todir="@{destdir}" />
+        </junitreport>
+      </sequential>
+    </macrodef>
+
+    <!-- Predefined properties -->
+    <fileset id="sources.fileset" dir="." includes="*.js" />
+    <property name="sources" refid="sources.fileset" />
+    <fileset id="test.fileset" dir="." includes="test/*.js" />
+    <property name="test.sources" refid="test.fileset" />
+    <property name="all.sources" value="${sources};${test.sources}" />
+  </target>
+
+  <target name="test"
+          description="Launch unit tests on handwritten and compiled code"
+          depends="test-standard, test-compiled" />
+
+  <target name="test-standard"
+          description="Launch unit tests on handwritten code"
+          depends="init">
+    <propertyregex property="jstest.src" input="${all.sources}" global="yes"
+                   regexp="(^)|([;,])" replace="${line.separator}  - " />
+    <!--echo message="jstest.src=${jstest.src}" /-->
+    <jstest files="${jstest.src}" />
+  </target>
+
+  <target name="compile"
+          description="Pass the code through the Closure compiler"
+          depends="init">
+    <propertyregex property="closure.src" input="${sources}" global="yes"
+                   regexp="(^)|([;,])" replace=" --js=" />
+
+    <mkdir dir="compiled"/>
+    <closure files="${closure.src}" />
+  </target>
+  
+  <target name="test-compiled"
+          description="Launch unit tests on compiled code"
+          depends="init">
+    <property name="compiled.test.sources"
+              value="compiled/${ant.project.name}_compiled.js;${test.sources}" />
+    <propertyregex property="compiled.jstest.src" input="${compiled.test.sources}" global="yes"
+                   regexp="(^)|([;,])" replace="${line.separator}  - " />
+    <jstest files="${compiled.jstest.src}"
+            conf="jsTestDriverCompiled.conf"
+            destdir="testoutput_compiled" />
+  </target>
+
+  <target name="advanced-tests"
+          description="Pass the code through the advanced Closure compiler"
+          depends="init">
+    <mkdir dir="compiled"/>
+    <closure level="ADVANCED_OPTIMIZATIONS" output="compiled/tests.js" >
+      <arg value="--js=test/testutil.js" />
+      <arg value="--js=test/testhero.js" />
+      <arg value="--js=test/testbeast.js" />
+      <arg value="--js=test/testgods.js" />
+    </closure>
+    <jstest conf="jsTestDriverAdvanced.conf" destdir="testoutput_advanced" />
+  </target>
+    
+</project>
