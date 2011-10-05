@@ -10,6 +10,7 @@
     <delete dir="testoutput_compiled" failonerror="no" />
     <delete dir="testoutput_advanced" failonerror="no" />
     <delete dir="compiled" failonerror="no" />
+    <delete dir="advanced" failonerror="no" />
   </target>
 
   <target name="pre-init" />
@@ -114,17 +115,32 @@
             destdir="testoutput_compiled" />
   </target>
 
-  <target name="advanced-tests"
+  <target name="compile-advanced"
+          description="Pass the code through the Closure compiler in advanced mode"
+          depends="init">
+    <propertyregex property="closure.src" input="${sources}" global="yes"
+                   regexp="(^)|([;,])" replace=" --js=" />
+
+    <mkdir dir="advanced"/>
+    <closure level="ADVANCED_OPTIMIZATIONS"
+             files="${closure.src}"
+             output="advanced/${ant.project.name}_advanced.js"/>
+  </target>
+  
+  <target name="test-advanced"
           description="Pass the code through the advanced Closure compiler"
           depends="init">
-    <mkdir dir="compiled"/>
-    <closure level="ADVANCED_OPTIMIZATIONS" output="compiled/tests.js" >
-      <arg value="--js=test/testutil.js" />
-      <arg value="--js=test/testhero.js" />
-      <arg value="--js=test/testbeast.js" />
-      <arg value="--js=test/testgods.js" />
-    </closure>
-    <jstest conf="jsTestDriverAdvanced.conf" destdir="testoutput_advanced" />
+    <property name="advanced.test.sources"
+              value="${sources};${test.sources}" />
+    <propertyregex property="advanced.src" input="${advanced.test.sources}" global="yes"
+                   regexp="(^)|([;,])" replace=" --js=" />
+    <mkdir dir="advanced"/>
+    <closure level="ADVANCED_OPTIMIZATIONS"
+             files="${advanced.src}"
+             output="advanced/tests.js" />
+    <jstest files="  - advanced/tests.js"
+            conf="jsTestDriverAdvanced.conf"
+            destdir="testoutput_advanced" />
   </target>
     
 </project>
