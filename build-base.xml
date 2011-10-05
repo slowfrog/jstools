@@ -11,9 +11,12 @@
     <delete dir="testoutput_advanced" failonerror="no" />
     <delete dir="compiled" failonerror="no" />
   </target>
+
+  <target name="pre-init" />
   
   <target name="init"
-          description="Initializes the build, define macros...">
+          description="Initializes the build, define macros..."
+          depends="pre-init">
 
     <taskdef resource="net/sf/antcontrib/antcontrib.properties">
       <classpath>
