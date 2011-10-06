@@ -115,6 +115,10 @@
             destdir="testoutput_compiled" />
   </target>
 
+  <target name="advanced"
+          description="Compile and test with the closure compiler advanced optimizations"
+          depends="compile-advanced, test-advanced" />
+  
   <target name="compile-advanced"
           description="Pass the code through the Closure compiler in advanced mode"
           depends="init">
