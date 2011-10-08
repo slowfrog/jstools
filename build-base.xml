@@ -35,6 +35,7 @@
           <arg line="@{files}" />
           <arg value="--compilation_level=@{level}" />
           <arg value="--js_output_file=@{output}" />
+          <arg value="--summary_detail_level=3" />
           <extra />
         </java>
       </sequential>
