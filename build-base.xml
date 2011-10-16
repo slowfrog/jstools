@@ -40,6 +40,43 @@
         </java>
       </sequential>
     </macrodef>
+
+    <macrodef name="closure-strict">
+      <attribute name="level" default="SIMPLE_OPTIMIZATIONS" />
+      <attribute name="files" />
+      <attribute name="output" default="compiled/${ant.project.name}_compiled.js" />
+      <element name="extra" optional="yes" implicit="yes" />
+      <sequential>
+        <java jar="${build-base.basedir}/closure.jar" fork="true" failonerror="yes">
+          <arg line="@{files}" />
+          <arg value="--compilation_level=@{level}" />
+          <arg value="--js_output_file=@{output}" />
+          <arg value="--summary_detail_level=3" />
+          <arg line="--jscomp_error accessControls" />
+          <arg line="--jscomp_error ambiguousFunctionDecl" />
+          <arg line="--jscomp_error checkRegExp" />
+          <arg line="--jscomp_error checkTypes" />
+          <arg line="--jscomp_error checkVars" />
+          <arg line="--jscomp_error constantProperty" />
+          <arg line="--jscomp_error deprecated" />
+          <arg line="--jscomp_error es5Strict" />
+          <arg line="--jscomp_error externsValidation" />
+          <arg line="--jscomp_error fileoverviewTags" />
+          <arg line="--jscomp_error globalThis" />
+          <arg line="--jscomp_error internetExplorerChecks" />
+          <arg line="--jscomp_error invalidCasts" />
+          <arg line="--jscomp_error missingProperties" />
+          <arg line="--jscomp_error nonStandardJsDocs" />
+          <arg line="--jscomp_error strictModuleDepCheck" />
+          <arg line="--jscomp_error typeInvalidation" />
+          <arg line="--jscomp_error undefinedVars" />
+          <arg line="--jscomp_error unknownDefines" />
+          <arg line="--jscomp_error uselessCode" />
+          <arg line="--jscomp_error visibility" />
+          <extra />
+        </java>
+      </sequential>
+    </macrodef>
     
     <macrodef name="jstest">
       <attribute name="destdir" default="testoutput" />
@@ -127,32 +164,9 @@
                    regexp="(^)|([;,])" replace=" --js=" />
 
     <mkdir dir="advanced"/>
-    <closure level="ADVANCED_OPTIMIZATIONS"
-             files="${closure.src}"
-             output="advanced/${ant.project.name}_advanced.js">
-            <arg line="--jscomp_error accessControls" />
-            <arg line="--jscomp_error ambiguousFunctionDecl" />
-            <arg line="--jscomp_error checkRegExp" />
-            <arg line="--jscomp_error checkTypes" />
-            <arg line="--jscomp_error checkVars" />
-            <arg line="--jscomp_error constantProperty" />
-            <arg line="--jscomp_error deprecated" />
-            <arg line="--jscomp_error es5Strict" />
-            <arg line="--jscomp_error externsValidation" />
-            <arg line="--jscomp_error fileoverviewTags" />
-            <arg line="--jscomp_error globalThis" />
-            <arg line="--jscomp_error internetExplorerChecks" />
-            <arg line="--jscomp_error invalidCasts" />
-            <arg line="--jscomp_error missingProperties" />
-            <arg line="--jscomp_error nonStandardJsDocs" />
-            <arg line="--jscomp_error strictModuleDepCheck" />
-            <arg line="--jscomp_error typeInvalidation" />
-            <arg line="--jscomp_error undefinedVars" />
-            <arg line="--jscomp_error unknownDefines" />
-            <arg line="--jscomp_error uselessCode" />
-            <arg line="--jscomp_error visibility" />
-    </closure>
-
+    <closure-strict level="ADVANCED_OPTIMIZATIONS"
+                    files="${closure.src}"
+                    output="advanced/${ant.project.name}_advanced.js" />
   </target>
   
   <target name="test-advanced"
