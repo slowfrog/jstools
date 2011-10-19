@@ -31,6 +31,7 @@
       <attribute name="output" default="compiled/${ant.project.name}_compiled.js" />
       <element name="extra" optional="yes" implicit="yes" />
       <sequential>
+        <echo message="Compiling @{files}" />
         <java jar="${build-base.basedir}/closure.jar" fork="true" failonerror="yes">
           <arg line="@{files}" />
           <arg value="--compilation_level=@{level}" />
@@ -47,6 +48,7 @@
       <attribute name="output" default="compiled/${ant.project.name}_compiled.js" />
       <element name="extra" optional="yes" implicit="yes" />
       <sequential>
+        <echo message="Compiling @{files}" />
         <java jar="${build-base.basedir}/closure.jar" fork="true" failonerror="yes">
           <arg line="@{files}" />
           <arg value="--compilation_level=@{level}" />
@@ -126,7 +128,7 @@
           description="Launch unit tests on handwritten code"
           depends="init">
     <propertyregex property="jstest.src" input="${all.sources}" global="yes"
-                   regexp="(^)|([;,])" replace="${line.separator}  - " />
+                   regexp="(^)|([;,]\s*)" replace="${line.separator}  - " />
     <!--echo message="jstest.src=${jstest.src}" /-->
     <jstest files="${jstest.src}" />
   </target>
@@ -135,7 +137,7 @@
           description="Pass the code through the Closure compiler"
           depends="init">
     <propertyregex property="closure.src" input="${sources}" global="yes"
-                   regexp="(^)|([;,])" replace=" --js=" />
+                   regexp="(^)|([;,]\s*)" replace=" --js=" />
 
     <mkdir dir="compiled"/>
     <closure files="${closure.src}" />
@@ -147,7 +149,7 @@
     <property name="compiled.test.sources"
               value="compiled/${ant.project.name}_compiled.js;${test.sources}" />
     <propertyregex property="compiled.jstest.src" input="${compiled.test.sources}" global="yes"
-                   regexp="(^)|([;,])" replace="${line.separator}  - " />
+                   regexp="(^)|([;,]\s*)" replace="${line.separator}  - " />
     <jstest files="${compiled.jstest.src}"
             conf="jsTestDriverCompiled.conf"
             destdir="testoutput_compiled" />
@@ -161,7 +163,7 @@
           description="Pass the code through the Closure compiler in advanced mode"
           depends="init">
     <propertyregex property="closure.src" input="${sources}" global="yes"
-                   regexp="(^)|([;,])" replace=" --js=" />
+                   regexp="(^)|([;,]\s*)" replace=" --js=" />
 
     <mkdir dir="advanced"/>
     <closure-strict level="ADVANCED_OPTIMIZATIONS"
@@ -175,7 +177,7 @@
     <property name="advanced.test.sources"
               value="${sources};${test.sources}" />
     <propertyregex property="advanced.src" input="${advanced.test.sources}" global="yes"
-                   regexp="(^)|([;,])" replace=" --js=" />
+                   regexp="(^)|([;,]\s*)" replace=" --js=" />
     <mkdir dir="advanced"/>
     <closure level="ADVANCED_OPTIMIZATIONS"
              files="${advanced.src}"
