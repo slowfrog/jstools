@@ -179,10 +179,11 @@
     <propertyregex property="advanced.src" input="${advanced.test.sources}" global="yes"
                    regexp="(^)|([;,]\s*)" replace=" --js=" />
     <mkdir dir="advanced"/>
-    <closure level="ADVANCED_OPTIMIZATIONS"
-             files="${advanced.src}"
-             output="advanced/tests.js">
-    </closure>
+    <closure-strict level="ADVANCED_OPTIMIZATIONS"
+                    files="${advanced.src}"
+                    output="advanced/tests.js">
+      <arg line="--externs ${build-base.basedir}/externs.js" />
+    </closure-strict>
     <jstest files="  - advanced/tests.js"
             conf="jsTestDriverAdvanced.conf"
             destdir="testoutput_advanced" />
