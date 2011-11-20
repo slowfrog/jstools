@@ -14,7 +14,7 @@ Tests
 -----
 
 To run tests with JsTestDriver, you need to run a server, to capture some browsers and then
-launch the tests. Here is how I do it.<
+launch the tests. Here is how I do it.
  
 1. Start the server with a command like: ``java -jar JsTestDriver-1.3.3b.jar --port 9876`` This must be done in the directory where JsTestDriver is located, but it can be anywhere.
 2. Capture all the browsers you want by pointing them to ``http://localhost:9876/capture``
@@ -25,10 +25,10 @@ Files
 =====
 
 - **ant-contrib-1.0b3.jar** is a library of very useful ant tasks. Once you start using them, you just can't stop.
-- **closure.jar** is Google's closure JavaScript compiler
-- **JsTestDriver-1.3.3b.jar** is a unit test library and server for JavaScript
-- **template_jsTestDriver.conf** is a sample of configuration for JsTestDriver
-- **externs.js** is the file containing the declaration extern functions from JsTestDriver, to allow compilation of your test suite in advanced mode with closure
-- **build-base.xml** is the base ant file that you can import
+- **closure.jar** is Google's closure JavaScript compiler.
+- **JsTestDriver-1.3.3b.jar** is a unit test library and server for JavaScript.
+- **template_jsTestDriver.conf** is a sample of configuration for JsTestDriver.
+- **externs.js** is the file containing the declaration extern functions from JsTestDriver, to allow compilation of your test suite in advanced mode with closure.
+- **build-base.xml** is the base ant file that you can import.
 - **sample-build.xml** is a sample of ant build file for a project. It's almost empty because all the useful stuff is already defined in build-base.xml.
-- **README.rst** is this file, handy for presenting the project on github
+- **README.rst** is this file, handy for presenting the project on github.
