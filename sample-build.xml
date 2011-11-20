@@ -1,0 +1,8 @@
+<project name="sample-project" default="all">
+  <import file="../jstools/build-base.xml" />
+
+  <target name="pre-init">
+    <property name="sources"
+              value="util.js;board.js;model.js;game.js;beasts.js;hero.js;gods.js;tutorial.js;lothlorien.js;widgets.js;viewinfo.js;viewboard.js;controller.js;main.js"/>
+  </target>
+</project>
