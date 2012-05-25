@@ -61,6 +61,7 @@
           <arg line="--jscomp_error checkVars" />
           <arg line="--jscomp_error constantProperty" />
           <arg line="--jscomp_error deprecated" />
+          <arg line="--jscomp_error duplicate" />
           <arg line="--jscomp_error es5Strict" />
           <arg line="--jscomp_error externsValidation" />
           <arg line="--jscomp_error fileoverviewTags" />
@@ -111,6 +112,13 @@
         </junitreport>
       </sequential>
     </macrodef>
+
+    <taskdef name="jslint"
+             classname="com.googlecode.jslint4java.ant.JSLintTask">
+            <classpath>
+        <pathelement location="${build-base.basedir}/jslint4java-2.0.2.jar" />
+      </classpath>
+    </taskdef>
 
     <!-- Predefined properties -->
     <fileset id="sources.fileset" dir="." includes="*.js" />
@@ -187,6 +195,17 @@
     <jstest files="  - advanced/tests.js"
             conf="jsTestDriverAdvanced.conf"
             destdir="testoutput_advanced" />
+  </target>
+
+  <target name="jslint"
+          description="Run jslint on sources"
+          depends="init">
+    <property name="jslint.options"
+              value="indent=2, browser, sub, nomen, anon, vars, plusplus" />
+    <jslint options="${jslint.options}">
+      <formatter type="plain" />
+      <filelist files="${sources}"/>
+    </jslint>
   </target>
     
 </project>
